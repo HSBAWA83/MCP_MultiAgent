@@ -1,0 +1,1392 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="tw-ink">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>MCP Agent Control Centre — Thoughtworks</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link
+    href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600;700&family=DM+Mono:wght@400;500&display=swap"
+    rel="stylesheet" />
+
+  <style>
+    /* ═══════════════════════════════════════════════════════════
+     THEME VARIABLES
+  ═══════════════════════════════════════════════════════════ */
+
+    [data-theme="tw-ink"] {
+      --bg: #0c0d10;
+      --bg2: #13141a;
+      --bg3: #1c1d24;
+      --border: rgba(255, 255, 255, 0.07);
+      --text: #f0f0f2;
+      --muted: #6b7280;
+      --subtle: #374151;
+      --accent: #E4002B;
+      --accent-dim: rgba(228, 0, 43, 0.10);
+      --accent-hi: #ff3355;
+      --accent2: #ff6b35;
+      --success: #10b981;
+      --warning: #f59e0b;
+      --theme-name: "TW Ink";
+    }
+
+    [data-theme="tw-light"] {
+      --bg: #ffffff;
+      --bg2: #f5f5f5;
+      --bg3: #ebebeb;
+      --border: rgba(0, 0, 0, 0.09);
+      --text: #111111;
+      --muted: #6b7280;
+      --subtle: #d1d5db;
+      --accent: #E4002B;
+      --accent-dim: rgba(228, 0, 43, 0.08);
+      --accent-hi: #c7001f;
+      --accent2: #ff4d00;
+      --success: #059669;
+      --warning: #d97706;
+      --theme-name: "TW Light";
+    }
+
+    [data-theme="ocean"] {
+      --bg: #05091a;
+      --bg2: #0a1026;
+      --bg3: #111831;
+      --border: rgba(0, 220, 255, 0.08);
+      --text: #e8f4ff;
+      --muted: #5d7999;
+      --subtle: #1e3352;
+      --accent: #00d4ff;
+      --accent-dim: rgba(0, 212, 255, 0.10);
+      --accent-hi: #33e5ff;
+      --accent2: #6366f1;
+      --success: #22d3ee;
+      --warning: #fbbf24;
+      --theme-name: "Ocean";
+    }
+
+    [data-theme="forest"] {
+      --bg: #040d09;
+      --bg2: #071510;
+      --bg3: #0e2018;
+      --border: rgba(0, 230, 130, 0.08);
+      --text: #e8f5ee;
+      --muted: #4d7a60;
+      --subtle: #1a3d2b;
+      --accent: #00e589;
+      --accent-dim: rgba(0, 229, 137, 0.10);
+      --accent-hi: #2affa2;
+      --accent2: #06b6d4;
+      --success: #00e589;
+      --warning: #f59e0b;
+      --theme-name: "Forest";
+    }
+
+    [data-theme="twilight"] {
+      --bg: #0d0717;
+      --bg2: #130d22;
+      --bg3: #1c1530;
+      --border: rgba(160, 100, 255, 0.10);
+      --text: #f0eaff;
+      --muted: #7c6fa0;
+      --subtle: #2d2145;
+      --accent: #a855f7;
+      --accent-dim: rgba(168, 85, 247, 0.12);
+      --accent-hi: #c084fc;
+      --accent2: #ec4899;
+      --success: #34d399;
+      --warning: #fbbf24;
+      --theme-name: "Twilight";
+    }
+
+    /* ═══════════════════════════════════════════════════════════
+     BASE
+  ═══════════════════════════════════════════════════════════ */
+    *,
+    *::before,
+    *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: 'DM Sans', system-ui, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+      transition: background .3s, color .3s;
+    }
+
+    /* ═══════════════════════════════════════════════════════════
+     TOP BAR  (Thoughtworks header)
+  ═══════════════════════════════════════════════════════════ */
+    .topbar {
+      height: 56px;
+      background: var(--bg2);
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      padding: 0 24px;
+      gap: 0;
+      flex-shrink: 0;
+      position: relative;
+      transition: background .3s;
+    }
+
+    /* TW red accent strip */
+    .topbar::after {
+      content: '';
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      height: 2px;
+      background: var(--accent);
+      transition: background .3s;
+    }
+
+    /* Brand mark — TW eye/lens SVG */
+    .tw-logo {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      text-decoration: none;
+      margin-right: 32px;
+      flex-shrink: 0;
+    }
+
+    .tw-logo svg {
+      flex-shrink: 0;
+    }
+
+    .tw-brand {
+      font-size: 15px;
+      font-weight: 700;
+      letter-spacing: -.4px;
+      color: var(--text);
+      transition: color .3s;
+    }
+
+    .tw-brand em {
+      font-style: normal;
+      color: var(--accent);
+      transition: color .3s;
+    }
+
+    .tw-divider {
+      width: 1px;
+      height: 20px;
+      background: var(--border);
+      margin: 0 20px;
+    }
+
+    .tw-subtitle {
+      font-size: 12px;
+      font-weight: 500;
+      color: var(--muted);
+      letter-spacing: .02em;
+      text-transform: uppercase;
+    }
+
+    /* Theme switcher */
+    .theme-switcher {
+      margin-left: auto;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .theme-label {
+      font-size: 11px;
+      color: var(--muted);
+      margin-right: 4px;
+      text-transform: uppercase;
+      letter-spacing: .06em;
+    }
+
+    .theme-dot {
+      width: 20px;
+      height: 20px;
+      border-radius: 50%;
+      cursor: pointer;
+      border: 2px solid transparent;
+      transition: transform .18s, border-color .18s;
+      flex-shrink: 0;
+    }
+
+    .theme-dot:hover {
+      transform: scale(1.2);
+    }
+
+    .theme-dot.active {
+      border-color: var(--text);
+    }
+
+    /* ═══════════════════════════════════════════════════════════
+     SHELL
+  ═══════════════════════════════════════════════════════════ */
+    .shell {
+      flex: 1;
+      display: flex;
+      overflow: hidden;
+      height: calc(100vh - 56px);
+    }
+
+    /* ═══════════════════════════════════════════════════════════
+     SIDEBAR
+  ═══════════════════════════════════════════════════════════ */
+    .sidebar {
+      width: 210px;
+      background: var(--bg2);
+      border-right: 1px solid var(--border);
+      display: flex;
+      flex-direction: column;
+      flex-shrink: 0;
+      padding: 20px 0 16px;
+      transition: background .3s;
+    }
+
+    .nav-group-label {
+      font-size: 9px;
+      font-weight: 700;
+      color: var(--muted);
+      letter-spacing: .14em;
+      text-transform: uppercase;
+      padding: 0 20px 8px;
+    }
+
+    .nav-item {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 9px 20px;
+      font-size: 13.5px;
+      font-weight: 500;
+      color: var(--muted);
+      cursor: pointer;
+      transition: all .15s;
+      position: relative;
+    }
+
+    .nav-item:hover {
+      color: var(--text);
+      background: var(--accent-dim);
+    }
+
+    .nav-item.active {
+      color: var(--text);
+      background: var(--accent-dim);
+    }
+
+    .nav-item.active::before {
+      content: '';
+      position: absolute;
+      left: 0;
+      top: 0;
+      bottom: 0;
+      width: 3px;
+      background: var(--accent);
+      border-radius: 0 2px 2px 0;
+      transition: background .3s;
+    }
+
+    .nav-icon {
+      font-size: 14px;
+      width: 18px;
+      text-align: center;
+      opacity: .8;
+    }
+
+    .sidebar-footer {
+      margin-top: auto;
+      padding: 14px 20px 0;
+      border-top: 1px solid var(--border);
+    }
+
+    .status-row {
+      display: flex;
+      align-items: center;
+      gap: 7px;
+      font-size: 11.5px;
+      color: var(--muted);
+    }
+
+    .dot-live {
+      width: 6px;
+      height: 6px;
+      background: var(--success);
+      border-radius: 50%;
+      flex-shrink: 0;
+      animation: pulse 2s infinite;
+      transition: background .3s;
+    }
+
+    @keyframes pulse {
+
+      0%,
+      100% {
+        opacity: 1
+      }
+
+      50% {
+        opacity: .4
+      }
+    }
+
+    .tw-copy {
+      font-size: 10px;
+      color: var(--muted);
+      margin-top: 8px;
+      opacity: .6;
+    }
+
+    /* ═══════════════════════════════════════════════════════════
+     MAIN
+  ═══════════════════════════════════════════════════════════ */
+    .main {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+    }
+
+    /* Sub-header */
+    .subheader {
+      padding: 14px 28px;
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      background: var(--bg);
+      transition: background .3s;
+    }
+
+    .subheader-left h1 {
+      font-size: 17px;
+      font-weight: 700;
+      letter-spacing: -.3px;
+    }
+
+    .subheader-left p {
+      font-size: 12px;
+      color: var(--muted);
+      margin-top: 1px;
+    }
+
+    .stats-row {
+      display: flex;
+      gap: 10px;
+    }
+
+    .stat-chip {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      padding: 5px 12px;
+      background: var(--bg2);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      font-size: 12px;
+      transition: background .3s;
+    }
+
+    .stat-num {
+      font-weight: 700;
+      color: var(--accent);
+      transition: color .3s;
+    }
+
+    /* Content area */
+    .content {
+      flex: 1;
+      display: flex;
+      overflow: hidden;
+    }
+
+    .panel {
+      flex: 1;
+      padding: 22px 26px;
+      overflow-y: auto;
+    }
+
+    .section {
+      display: none;
+    }
+
+    .section.active {
+      display: block;
+    }
+
+    /* ═══════════════════════════════════════════════════════════
+     ACTIVITY FEED
+  ═══════════════════════════════════════════════════════════ */
+    .activity-feed {
+      width: 270px;
+      border-left: 1px solid var(--border);
+      padding: 18px 16px;
+      overflow-y: auto;
+      background: var(--bg2);
+      flex-shrink: 0;
+      transition: background .3s;
+    }
+
+    .feed-title {
+      font-size: 9px;
+      font-weight: 700;
+      color: var(--muted);
+      letter-spacing: .14em;
+      text-transform: uppercase;
+      margin-bottom: 14px;
+    }
+
+    .evt {
+      padding: 9px 10px 9px 12px;
+      border-left: 2px solid var(--accent);
+      background: var(--bg3);
+      border-radius: 0 6px 6px 0;
+      margin-bottom: 7px;
+      animation: fadeUp .25s ease;
+      transition: background .3s, border-color .3s;
+    }
+
+    @keyframes fadeUp {
+      from {
+        opacity: 0;
+        transform: translateY(4px)
+      }
+
+      to {
+        opacity: 1;
+        transform: none
+      }
+    }
+
+    .evt-agent {
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--accent-hi);
+      transition: color .3s;
+    }
+
+    .evt-action {
+      font-size: 11px;
+      font-family: 'DM Mono', monospace;
+      color: var(--muted);
+      margin-top: 2px;
+    }
+
+    .evt-time {
+      font-size: 10px;
+      color: var(--subtle);
+      margin-top: 4px;
+    }
+
+    /* ═══════════════════════════════════════════════════════════
+     CARDS
+  ═══════════════════════════════════════════════════════════ */
+    .card {
+      background: var(--bg2);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 18px 20px;
+      margin-bottom: 14px;
+      transition: background .3s, border-color .3s;
+    }
+
+    .card-title {
+      font-size: 12.5px;
+      font-weight: 700;
+      letter-spacing: .02em;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin-bottom: 14px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .card-title::after {
+      content: '';
+      flex: 1;
+      height: 1px;
+      background: var(--border);
+      transition: background .3s;
+    }
+
+    /* Two-col card grid */
+    .grid-2 {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 14px;
+    }
+
+    /* ═══════════════════════════════════════════════════════════
+     FORMS
+  ═══════════════════════════════════════════════════════════ */
+    .form-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+    }
+
+    .form-group {
+      display: flex;
+      flex-direction: column;
+      gap: 5px;
+    }
+
+    .form-group.full {
+      grid-column: span 2;
+    }
+
+    label {
+      font-size: 10.5px;
+      font-weight: 600;
+      color: var(--muted);
+      text-transform: uppercase;
+      letter-spacing: .07em;
+    }
+
+    input,
+    select,
+    textarea {
+      background: var(--bg3);
+      border: 1px solid var(--border);
+      border-radius: 7px;
+      padding: 8px 11px;
+      color: var(--text);
+      font-size: 13px;
+      font-family: inherit;
+      outline: none;
+      transition: border-color .2s, background .2s, box-shadow .2s;
+      width: 100%;
+    }
+
+    input::placeholder,
+    textarea::placeholder {
+      color: var(--subtle);
+    }
+
+    input:focus,
+    textarea:focus {
+      border-color: var(--accent);
+      box-shadow: 0 0 0 3px var(--accent-dim);
+    }
+
+    textarea {
+      resize: vertical;
+      min-height: 80px;
+    }
+
+    /* ═══════════════════════════════════════════════════════════
+     BUTTONS
+  ═══════════════════════════════════════════════════════════ */
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 8px 18px;
+      border-radius: 7px;
+      font-size: 13px;
+      font-weight: 600;
+      font-family: inherit;
+      cursor: pointer;
+      border: none;
+      transition: all .18s;
+    }
+
+    .btn-primary {
+      background: var(--accent);
+      color: #fff;
+      letter-spacing: .01em;
+    }
+
+    .btn-primary:hover {
+      filter: brightness(1.1);
+      transform: translateY(-1px);
+      box-shadow: 0 4px 14px var(--accent-dim);
+    }
+
+    .btn-ghost {
+      background: transparent;
+      color: var(--muted);
+      border: 1px solid var(--border);
+    }
+
+    .btn-ghost:hover {
+      background: var(--bg3);
+      color: var(--text);
+    }
+
+    .btn:disabled {
+      opacity: .4;
+      cursor: not-allowed;
+      transform: none !important;
+      filter: none !important;
+    }
+
+    .btn-sm {
+      padding: 5px 11px;
+      font-size: 11.5px;
+    }
+
+    /* ═══════════════════════════════════════════════════════════
+     TABLES
+  ═══════════════════════════════════════════════════════════ */
+    .table-wrap {
+      overflow-x: auto;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 13px;
+    }
+
+    th {
+      text-align: left;
+      padding: 7px 12px;
+      font-size: 10px;
+      font-weight: 700;
+      color: var(--muted);
+      text-transform: uppercase;
+      letter-spacing: .08em;
+      border-bottom: 1px solid var(--border);
+    }
+
+    td {
+      padding: 10px 12px;
+      border-bottom: 1px solid var(--border);
+      transition: background .15s;
+    }
+
+    tr:last-child td {
+      border-bottom: none;
+    }
+
+    tbody tr:hover td {
+      background: var(--accent-dim);
+    }
+
+    .tag {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      padding: 2px 8px;
+      border-radius: 4px;
+      font-size: 11px;
+      font-weight: 600;
+      font-family: 'DM Mono', monospace;
+    }
+
+    .tag-accent {
+      background: var(--accent-dim);
+      color: var(--accent-hi);
+      transition: background .3s, color .3s;
+    }
+
+    .tag-success {
+      background: rgba(16, 185, 129, .12);
+      color: #34d399;
+    }
+
+    /* ═══════════════════════════════════════════════════════════
+     PRESET TILES
+  ═══════════════════════════════════════════════════════════ */
+    .preset-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 10px;
+    }
+
+    .preset-tile {
+      padding: 14px;
+      background: var(--bg3);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      cursor: pointer;
+      transition: all .18s;
+    }
+
+    .preset-tile:hover {
+      border-color: var(--accent);
+      background: var(--accent-dim);
+      transform: translateY(-2px);
+    }
+
+    .preset-icon {
+      font-size: 22px;
+      margin-bottom: 8px;
+    }
+
+    .preset-name {
+      font-size: 12px;
+      font-weight: 700;
+    }
+
+    .preset-desc {
+      font-size: 11px;
+      color: var(--muted);
+      margin-top: 3px;
+      line-height: 1.4;
+    }
+
+    /* ═══════════════════════════════════════════════════════════
+     AGENT RESULTS
+  ═══════════════════════════════════════════════════════════ */
+    .agent-result-card {
+      border-left: 3px solid var(--accent);
+    }
+
+    .step-block {
+      margin-top: 8px;
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      overflow: hidden;
+    }
+
+    .step-head {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 7px 12px;
+      background: var(--bg3);
+      font-size: 11.5px;
+      transition: background .3s;
+    }
+
+    .step-idx {
+      color: var(--muted);
+      font-family: 'DM Mono', monospace;
+    }
+
+    .step-fn {
+      color: var(--accent-hi);
+      font-family: 'DM Mono', monospace;
+      font-weight: 500;
+      transition: color .3s;
+    }
+
+    .step-body {
+      padding: 10px 12px;
+      font-size: 11.5px;
+      font-family: 'DM Mono', monospace;
+      color: var(--muted);
+      white-space: pre-wrap;
+      word-break: break-all;
+      border-top: 1px solid var(--border);
+      max-height: 160px;
+      overflow-y: auto;
+      line-height: 1.5;
+    }
+
+    .result-summary {
+      margin-top: 12px;
+      padding: 12px 14px;
+      background: rgba(16, 185, 129, .07);
+      border: 1px solid rgba(16, 185, 129, .18);
+      border-radius: 7px;
+      font-size: 13px;
+      line-height: 1.6;
+      color: #a7f3d0;
+    }
+
+    /* ═══════════════════════════════════════════════════════════
+     SPINNER
+  ═══════════════════════════════════════════════════════════ */
+    .spinner {
+      width: 15px;
+      height: 15px;
+      border: 2px solid rgba(255, 255, 255, .2);
+      border-top-color: currentColor;
+      border-radius: 50%;
+      animation: spin .7s linear infinite;
+      display: inline-block;
+    }
+
+    @keyframes spin {
+      to {
+        transform: rotate(360deg);
+      }
+    }
+
+    /* ═══════════════════════════════════════════════════════════
+     UTILITY
+  ═══════════════════════════════════════════════════════════ */
+    .flex {
+      display: flex;
+    }
+
+    .gap-8 {
+      gap: 8px;
+    }
+
+    .mt-12 {
+      margin-top: 12px;
+    }
+
+    .mt-16 {
+      margin-top: 16px;
+    }
+
+    .r {
+      margin-left: auto;
+    }
+
+    .empty {
+      text-align: center;
+      padding: 28px;
+      color: var(--muted);
+      font-size: 13px;
+    }
+
+    .up {
+      color: #f87171;
+    }
+
+    .down {
+      color: var(--success);
+    }
+
+    ::-webkit-scrollbar {
+      width: 4px;
+    }
+
+    ::-webkit-scrollbar-track {
+      background: transparent;
+    }
+
+    ::-webkit-scrollbar-thumb {
+      background: var(--border);
+      border-radius: 4px;
+    }
+
+    /* History entries */
+    .hist-entry {
+      padding: 8px 0 8px 10px;
+      border-left: 2px solid var(--accent);
+      margin-bottom: 7px;
+      font-size: 12px;
+      transition: border-color .3s;
+    }
+
+    .hist-entry:first-child {
+      border-color: var(--accent2);
+    }
+
+    .hist-entry .hp {
+      color: var(--text);
+      font-weight: 600;
+    }
+
+    .hist-entry .hr {
+      color: var(--muted);
+      margin-top: 1px;
+    }
+
+    .hist-entry .ht {
+      font-size: 10px;
+      color: var(--subtle);
+      margin-top: 3px;
+    }
+  </style>
+</head>
+
+<body>
+
+  <!-- ══════════════════════════════════════════════════════════
+  TOP BAR
+══════════════════════════════════════════════════════════ -->
+  <header class="topbar">
+    <a class="tw-logo" href="#">
+      <!-- Thoughtworks lens/eye mark -->
+      <svg width="30" height="30" viewBox="0 0 30 30" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <circle cx="15" cy="15" r="14" stroke="var(--accent)" stroke-width="2" fill="none" />
+        <ellipse cx="15" cy="15" rx="6" ry="9" stroke="var(--accent)" stroke-width="1.8" fill="none" />
+        <circle cx="15" cy="15" r="3" fill="var(--accent)" />
+      </svg>
+      <span class="tw-brand">Thought<em>works</em></span>
+    </a>
+    <div class="tw-divider"></div>
+    <span class="tw-subtitle">MCP Agent Control Centre</span>
+
+    <!-- Theme switcher -->
+    <div class="theme-switcher">
+      <span class="theme-label">Theme</span>
+      <div class="theme-dot active" data-t="tw-ink" style="background:#E4002B" title="TW Ink"></div>
+      <div class="theme-dot" data-t="tw-light" style="background:#f0f0f0;border-color:#ccc" title="TW Light"></div>
+      <div class="theme-dot" data-t="ocean" style="background:#00d4ff" title="Ocean"></div>
+      <div class="theme-dot" data-t="forest" style="background:#00e589" title="Forest"></div>
+      <div class="theme-dot" data-t="twilight" style="background:#a855f7" title="Twilight"></div>
+    </div>
+  </header>
+
+  <!-- ══════════════════════════════════════════════════════════
+  SHELL
+══════════════════════════════════════════════════════════ -->
+  <div class="shell">
+
+    <!-- SIDEBAR -->
+    <aside class="sidebar">
+      <div class="nav-group-label">Workspace</div>
+
+      <div class="nav-item active" data-section="products">
+        <span class="nav-icon">📦</span> Products
+      </div>
+      <div class="nav-item" data-section="pricing">
+        <span class="nav-icon">💰</span> Pricing
+      </div>
+      <div class="nav-item" data-section="agents">
+        <span class="nav-icon">🤖</span> Agents
+      </div>
+
+      <div class="sidebar-footer">
+        <div class="status-row">
+          <span class="dot-live"></span>
+          <span>GPT-4o-mini</span>
+        </div>
+        <div class="tw-copy">© 2025 Thoughtworks, Inc.</div>
+      </div>
+    </aside>
+
+    <!-- MAIN -->
+    <div class="main">
+
+      <!-- Sub-header -->
+      <div class="subheader">
+        <div class="subheader-left">
+          <h1 id="section-title">Products</h1>
+          <p id="section-desc">Manage your product catalogue</p>
+        </div>
+        <div class="stats-row">
+          <div class="stat-chip">📦 <span class="stat-num" id="stat-products">0</span></div>
+          <div class="stat-chip">💰 <span class="stat-num" id="stat-prices">0</span></div>
+          <div class="stat-chip">📋 <span class="stat-num" id="stat-activity">0</span> events</div>
+        </div>
+      </div>
+
+      <!-- Content -->
+      <div class="content">
+        <div class="panel">
+
+          <!-- ════ PRODUCTS ════ -->
+          <div class="section active" id="section-products">
+
+            <div class="card">
+              <div class="card-title">New Product</div>
+              <div class="form-grid">
+                <div class="form-group">
+                  <label>Product ID</label>
+                  <input id="p-id" placeholder="e.g. LAPTOP-001" />
+                </div>
+                <div class="form-group">
+                  <label>Name</label>
+                  <input id="p-name" placeholder="Product name" />
+                </div>
+                <div class="form-group">
+                  <label>Category</label>
+                  <input id="p-cat" placeholder="e.g. Electronics" />
+                </div>
+                <div class="form-group">
+                  <label>Description</label>
+                  <input id="p-desc" placeholder="Optional" />
+                </div>
+              </div>
+              <div class="flex gap-8 mt-12">
+                <button class="btn btn-primary" onclick="createProduct()">Create Product</button>
+              </div>
+            </div>
+
+            <div class="card">
+              <div class="card-title">
+                Catalogue
+                <button class="btn btn-ghost btn-sm r" onclick="loadProducts()">↻ Refresh</button>
+              </div>
+              <div class="table-wrap">
+                <table>
+                  <thead>
+                    <tr>
+                      <th>ID</th>
+                      <th>Name</th>
+                      <th>Category</th>
+                      <th>Description</th>
+                      <th>Status</th>
+                    </tr>
+                  </thead>
+                  <tbody id="products-tbody">
+                    <tr>
+                      <td colspan="5" class="empty">No products yet.</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+
+          <!-- ════ PRICING ════ -->
+          <div class="section" id="section-pricing">
+
+            <div class="grid-2">
+              <div class="card">
+                <div class="card-title">Set Price</div>
+                <div class="form-group" style="margin-bottom:10px">
+                  <label>Product ID</label>
+                  <input id="pp-id" placeholder="LAPTOP-001" />
+                </div>
+                <div class="form-group" style="margin-bottom:12px">
+                  <label>Price (USD)</label>
+                  <input id="pp-price" type="number" step="0.01" placeholder="1299.99" />
+                </div>
+                <button class="btn btn-primary" onclick="createPrice()">Set Price</button>
+              </div>
+
+              <div class="card">
+                <div class="card-title">Update Price</div>
+                <div class="form-group" style="margin-bottom:8px">
+                  <label>Product ID</label>
+                  <input id="up-id" placeholder="LAPTOP-001" />
+                </div>
+                <div class="form-group" style="margin-bottom:8px">
+                  <label>New Price (USD)</label>
+                  <input id="up-price" type="number" step="0.01" />
+                </div>
+                <div class="form-group" style="margin-bottom:12px">
+                  <label>Reason</label>
+                  <input id="up-reason" placeholder="e.g. Holiday sale" />
+                </div>
+                <button class="btn btn-primary" onclick="updatePrice()">Update</button>
+              </div>
+
+              <div class="card">
+                <div class="card-title">Apply Discount</div>
+                <div class="form-group" style="margin-bottom:8px">
+                  <label>Product ID</label>
+                  <input id="d-id" placeholder="LAPTOP-001" />
+                </div>
+                <div class="form-group" style="margin-bottom:12px">
+                  <label>Discount %</label>
+                  <input id="d-pct" type="number" step="0.1" placeholder="15" />
+                </div>
+                <button class="btn btn-primary" onclick="applyDiscount()">Apply Discount</button>
+              </div>
+
+              <div class="card">
+                <div class="card-title">Price History</div>
+                <div class="form-group" style="margin-bottom:10px">
+                  <label>Product ID</label>
+                  <div class="flex gap-8">
+                    <input id="h-id" placeholder="LAPTOP-001" />
+                    <button class="btn btn-ghost btn-sm" onclick="loadHistory()">View</button>
+                  </div>
+                </div>
+                <div id="history-list" style="max-height:160px;overflow-y:auto"></div>
+              </div>
+            </div>
+
+            <div class="card">
+              <div class="card-title">
+                All Prices
+                <button class="btn btn-ghost btn-sm r" onclick="loadPrices()">↻ Refresh</button>
+              </div>
+              <div class="table-wrap">
+                <table>
+                  <thead>
+                    <tr>
+                      <th>Product ID</th>
+                      <th>Price</th>
+                      <th>Previous</th>
+                      <th>Change</th>
+                      <th>Reason</th>
+                      <th>Updated</th>
+                    </tr>
+                  </thead>
+                  <tbody id="prices-tbody">
+                    <tr>
+                      <td colspan="6" class="empty">No prices set yet.</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+
+          <!-- ════ AGENTS ════ -->
+          <div class="section" id="section-agents">
+
+            <div class="card">
+              <div class="card-title">Quick Presets</div>
+              <div class="preset-grid">
+                <div class="preset-tile" onclick="preset('create')">
+                  <div class="preset-icon">🛍️</div>
+                  <div class="preset-name">Product Creation</div>
+                  <div class="preset-desc">Create product &amp; set initial price</div>
+                </div>
+                <div class="preset-tile" onclick="preset('update')">
+                  <div class="preset-icon">💰</div>
+                  <div class="preset-name">Pricing Update</div>
+                  <div class="preset-desc">Update price with reason &amp; verify</div>
+                </div>
+                <div class="preset-tile" onclick="preset('discount')">
+                  <div class="preset-icon">🏷️</div>
+                  <div class="preset-name">Discount Flow</div>
+                  <div class="preset-desc">Apply discount, confirm history</div>
+                </div>
+                <div class="preset-tile" onclick="preset('report')">
+                  <div class="preset-icon">📋</div>
+                  <div class="preset-name">Inventory Report</div>
+                  <div class="preset-desc">List all products &amp; prices</div>
+                </div>
+              </div>
+            </div>
+
+            <div class="card agent-result-card">
+              <div class="card-title">Run Agent</div>
+              <div class="form-grid">
+                <div class="form-group">
+                  <label>Agent Name</label>
+                  <input id="ag-name" value="Custom Agent" />
+                </div>
+                <div class="form-group full">
+                  <label>Instruction</label>
+                  <textarea id="ag-msg" placeholder="Natural language instruction for the agent…"></textarea>
+                </div>
+              </div>
+              <div class="flex gap-8 mt-12" style="align-items:center">
+                <button class="btn btn-primary" id="run-btn" onclick="runAgent()">▶ Run Agent</button>
+                <span id="run-spinner"
+                  style="display:none;align-items:center;gap:8px;font-size:12px;color:var(--muted)">
+                  <span class="spinner"></span> Agent running…
+                </span>
+              </div>
+            </div>
+
+            <div id="agent-results"></div>
+          </div>
+
+        </div><!-- /panel -->
+
+        <!-- ACTIVITY FEED -->
+        <div class="activity-feed">
+          <div class="feed-title">Live Activity</div>
+          <div id="activity-list">
+            <div class="empty" style="padding:16px 0">No events yet</div>
+          </div>
+        </div>
+
+      </div><!-- /content -->
+    </div><!-- /main -->
+  </div><!-- /shell -->
+
+  <script>
+    // ── Theme switcher ────────────────────────────────────────────────────────────
+    const root = document.documentElement;
+    document.querySelectorAll('.theme-dot').forEach(dot => {
+      dot.addEventListener('click', () => {
+        document.querySelectorAll('.theme-dot').forEach(d => d.classList.remove('active'));
+        dot.classList.add('active');
+        root.setAttribute('data-theme', dot.dataset.t);
+        localStorage.setItem('tw-theme', dot.dataset.t);
+      });
+    });
+    // Restore saved theme
+    const saved = localStorage.getItem('tw-theme');
+    if (saved) {
+      root.setAttribute('data-theme', saved);
+      document.querySelectorAll('.theme-dot').forEach(d => {
+        d.classList.toggle('active', d.dataset.t === saved);
+      });
+    }
+
+    // ── Navigation ────────────────────────────────────────────────────────────────
+    const SECTIONS = {
+      products: { title: 'Products', desc: 'Manage your product catalogue' },
+      pricing: { title: 'Pricing', desc: 'Set, update and track product prices' },
+      agents: { title: 'Agents', desc: 'Run AI agents with natural language instructions' },
+    };
+    document.querySelectorAll('.nav-item').forEach(el => {
+      el.addEventListener('click', () => {
+        const s = el.dataset.section;
+        document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+        document.querySelectorAll('.section').forEach(n => n.classList.remove('active'));
+        el.classList.add('active');
+        document.getElementById('section-' + s).classList.add('active');
+        document.getElementById('section-title').textContent = SECTIONS[s].title;
+        document.getElementById('section-desc').textContent = SECTIONS[s].desc;
+        if (s === 'products') loadProducts();
+        if (s === 'pricing') loadPrices();
+      });
+    });
+
+    // ── Stats ─────────────────────────────────────────────────────────────────────
+    async function refreshStats() {
+      const [p, pr, ac] = await Promise.all([
+        fetch('/api/products').then(r => r.json()).catch(() => ({ products: [] })),
+        fetch('/api/prices').then(r => r.json()).catch(() => ({ prices: [] })),
+        fetch('/api/activity').then(r => r.json()).catch(() => ({ activity: [] })),
+      ]);
+      document.getElementById('stat-products').textContent = p.products.length;
+      document.getElementById('stat-prices').textContent = pr.prices.length;
+      document.getElementById('stat-activity').textContent = ac.activity.length;
+      renderFeed(ac.activity.slice(0, 25));
+    }
+
+    // ── Products ──────────────────────────────────────────────────────────────────
+    async function loadProducts() {
+      const d = await fetch('/api/products').then(r => r.json());
+      const tb = document.getElementById('products-tbody');
+      if (!d.products.length) { tb.innerHTML = '<tr><td colspan="5" class="empty">No products yet.</td></tr>'; return; }
+      tb.innerHTML = d.products.map(p => `<tr>
+    <td><span class="tag tag-accent">${p.product_id}</span></td>
+    <td><strong>${p.name}</strong></td>
+    <td>${p.category}</td>
+    <td style="color:var(--muted)">${p.description || '—'}</td>
+    <td><span class="tag tag-success">${p.status}</span></td>
+  </tr>`).join('');
+    }
+
+    async function createProduct() {
+      const id = v('p-id'), name = v('p-name'), cat = v('p-cat'), desc = v('p-desc');
+      if (!id || !name || !cat) return alert('ID, Name and Category are required.');
+      const res = await post('/api/products', { product_id: id, name, category: cat, description: desc });
+      if (res.ok) { ['p-id', 'p-name', 'p-cat', 'p-desc'].forEach(clear); await loadProducts(); await refreshStats(); }
+      else { const e = await res.json(); alert('Error: ' + (e.detail || 'Failed')); }
+    }
+
+    // ── Pricing ───────────────────────────────────────────────────────────────────
+    async function loadPrices() {
+      const d = await fetch('/api/prices').then(r => r.json());
+      const tb = document.getElementById('prices-tbody');
+      if (!d.prices.length) { tb.innerHTML = '<tr><td colspan="6" class="empty">No prices yet.</td></tr>'; return; }
+      tb.innerHTML = d.prices.map(p => {
+        const chg = p.change_percent;
+        const chgEl = chg != null ? `<span class="${chg < 0 ? 'down' : 'up'}">${chg > 0 ? '+' : ''}${chg}%</span>` : '—';
+        return `<tr>
+      <td><span class="tag tag-accent">${p.product_id}</span></td>
+      <td><strong>$${p.price?.toFixed(2)}</strong></td>
+      <td style="color:var(--muted)">${p.previous_price != null ? '$' + p.previous_price.toFixed(2) : '—'}</td>
+      <td>${chgEl}</td>
+      <td style="color:var(--muted);font-size:12px">${p.reason || '—'}</td>
+      <td style="color:var(--muted);font-size:11px">${(p.updated_at || '').slice(0, 16).replace('T', ' ')}</td>
+    </tr>`;
+      }).join('');
+    }
+
+    async function createPrice() {
+      const id = v('pp-id'), price = parseFloat(v('pp-price'));
+      if (!id || isNaN(price)) return alert('Product ID and Price required.');
+      const res = await post('/api/prices', { product_id: id, price, currency: 'USD' });
+      if (res.ok) { clear('pp-id'); clear('pp-price'); await loadPrices(); await refreshStats(); }
+      else { const e = await res.json(); alert('Error: ' + e.detail); }
+    }
+
+    async function updatePrice() {
+      const id = v('up-id'), price = parseFloat(v('up-price')), reason = v('up-reason');
+      if (!id || isNaN(price)) return alert('Product ID and Price required.');
+      const res = await put(`/api/prices/${id}`, { price, reason });
+      if (res.ok) { await loadPrices(); await refreshStats(); }
+      else { const e = await res.json(); alert('Error: ' + e.detail); }
+    }
+
+    async function applyDiscount() {
+      const id = v('d-id'), pct = parseFloat(v('d-pct'));
+      if (!id || isNaN(pct)) return alert('Product ID and Discount % required.');
+      const res = await post(`/api/prices/${id}/discount`, { discount_percent: pct });
+      if (res.ok) { await loadPrices(); await refreshStats(); }
+      else { const e = await res.json(); alert('Error: ' + e.detail); }
+    }
+
+    async function loadHistory() {
+      const id = v('h-id');
+      if (!id) return alert('Enter a Product ID.');
+      const d = await fetch(`/api/prices/${id}/history`).then(r => r.json());
+      const el = document.getElementById('history-list');
+      if (!d.history.length) { el.innerHTML = '<p style="color:var(--muted);font-size:12px">No history found.</p>'; return; }
+      el.innerHTML = d.history.map((h, i) => `
+    <div class="hist-entry" style="${i === 0 ? 'border-color:var(--accent2)' : ''}">
+      <div class="hp">$${h.price?.toFixed(2)} ${h.currency || 'USD'}</div>
+      <div class="hr">${h.reason || 'Initial price'} ${h.change_percent != null ? '(' + h.change_percent + '%)' : ''}</div>
+      <div class="ht">${(h.updated_at || h.created_at || '').slice(0, 16).replace('T', ' ')}</div>
+    </div>`).join('');
+    }
+
+    // ── Agents ────────────────────────────────────────────────────────────────────
+    const PRESETS = {
+      create: { n: 'Product Creation Agent', m: 'Create a product called "Gaming Keyboard Pro" with ID KEY-001 in the Peripherals category, then set its initial price to $89.99 USD.' },
+      update: { n: 'Pricing Update Agent', m: 'Get the product KEY-001 details, then update its price to $79.99 with reason "Weekend flash sale". Then show the price history.' },
+      discount: { n: 'Discount Workflow Agent', m: 'Get product KEY-001 and its current price, apply a 10% discount, then show the full price history to confirm.' },
+      report: { n: 'Inventory Agent', m: 'List all products and all their prices and give me a concise summary of the current inventory.' },
+    };
+
+    function preset(k) {
+      document.getElementById('ag-name').value = PRESETS[k].n;
+      document.getElementById('ag-msg').value = PRESETS[k].m;
+    }
+
+    async function runAgent() {
+      const name = v('ag-name') || 'Agent', msg = v('ag-msg');
+      if (!msg) return alert('Please enter an instruction.');
+      const btn = document.getElementById('run-btn');
+      const spinner = document.getElementById('run-spinner');
+      btn.disabled = true; spinner.style.display = 'inline-flex';
+      try {
+        const res = await post('/api/agents/run', { agent: name, message: msg });
+        const d = await res.json();
+        if (!res.ok) { alert('Error: ' + (d.detail || 'Unknown')); return; }
+        renderAgentResult(name, msg, d);
+        await refreshStats(); await loadProducts(); await loadPrices();
+      } finally { btn.disabled = false; spinner.style.display = 'none'; }
+    }
+
+    function renderAgentResult(name, prompt, data) {
+      const el = document.getElementById('agent-results');
+      const time = new Date().toLocaleTimeString();
+      const steps = (data.steps || []).map((s, i) => `
+    <div class="step-block">
+      <div class="step-head">
+        <span class="step-idx">#${i + 1}</span>
+        <span class="step-fn">${esc(s.tool)}</span>
+      </div>
+      <div class="step-body">${esc(JSON.stringify({ args: s.args, result: s.result }, null, 2))}</div>
+    </div>`).join('');
+      const card = document.createElement('div');
+      card.className = 'card agent-result-card';
+      card.innerHTML = `
+    <div class="card-title">${esc(name)} <span style="margin-left:auto;font-size:10px;font-weight:500;color:var(--muted);text-transform:none;letter-spacing:0">${time}</span></div>
+    <p style="font-size:12px;color:var(--muted);margin-bottom:10px;border-bottom:1px solid var(--border);padding-bottom:10px"><em>${esc(prompt)}</em></p>
+    ${steps || '<p style="color:var(--muted);font-size:12px">No tool calls made.</p>'}
+    ${data.summary ? `<div class="result-summary">✅ ${esc(data.summary)}</div>` : ''}`;
+      el.prepend(card);
+    }
+
+    // ── Activity Feed ─────────────────────────────────────────────────────────────
+    function renderFeed(items) {
+      const el = document.getElementById('activity-list');
+      if (!items.length) { el.innerHTML = '<div class="empty" style="padding:16px 0">No events yet</div>'; return; }
+      el.innerHTML = items.map(a => `
+    <div class="evt">
+      <div class="evt-agent">${esc(a.agent)}</div>
+      <div class="evt-action">${esc(a.action)}</div>
+      <div class="evt-time">${(a.timestamp || '').slice(0, 19).replace('T', ' ')}</div>
+    </div>`).join('');
+    }
+
+    // ── Helpers ───────────────────────────────────────────────────────────────────
+    const v = id => document.getElementById(id).value.trim();
+    const clear = id => { document.getElementById(id).value = ''; };
+    const esc = s => (typeof s !== 'string' ? JSON.stringify(s) : s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+    const post = (url, body) => fetch(url, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(body) });
+    const put = (url, body) => fetch(url, { method: 'PUT', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(body) });
+
+    // ── Init ──────────────────────────────────────────────────────────────────────
+    loadProducts();
+    refreshStats();
+    setInterval(refreshStats, 5000);
+  </script>
+</body>
+
+</html>
