@@ -1,0 +1,80 @@
+graph TB
+    subgraph "Agent Layer"
+        A1[Product Creation Agent]
+        A2[Pricing Update Agent]
+        A3[Discount Workflow Agent]
+    end
+    
+    subgraph "Orchestration Layer"
+        O[Claude with Anthropic API<br/>Tool Use & Coordination]
+    end
+    
+    subgraph "MCP Protocol Layer"
+        MCP[Model Context Protocol<br/>Standardized Tool Interface]
+    end
+    
+    subgraph "MCP Servers"
+        PS[Product MCP Server<br/>product-manager]
+        PRS[Pricing MCP Server<br/>pricing-manager]
+    end
+    
+    subgraph "Tools - Product Server"
+        T1[create_product]
+        T2[get_product]
+        T3[list_products]
+        T4[update_product]
+    end
+    
+    subgraph "Tools - Pricing Server"
+        T5[create_price]
+        T6[update_price]
+        T7[get_price]
+        T8[get_price_history]
+        T9[list_all_prices]
+        T10[apply_discount]
+    end
+    
+    subgraph "Data Layer"
+        DB1[(Products DB<br/>In-Memory)]
+        DB2[(Prices DB<br/>In-Memory)]
+        DB3[(Price History<br/>In-Memory)]
+    end
+    
+    A1 --> O
+    A2 --> O
+    A3 --> O
+    O --> MCP
+    MCP --> PS
+    MCP --> PRS
+    PS --> T1
+    PS --> T2
+    PS --> T3
+    PS --> T4
+    PRS --> T5
+    PRS --> T6
+    PRS --> T7
+    PRS --> T8
+    PRS --> T9
+    PRS --> T10
+    T1 --> DB1
+    T2 --> DB1
+    T3 --> DB1
+    T4 --> DB1
+    T5 --> DB2
+    T6 --> DB2
+    T7 --> DB2
+    T8 --> DB3
+    T9 --> DB2
+    T10 --> DB2
+    T10 --> DB3
+    
+    style A1 fill:#e1f5ff
+    style A2 fill:#e1f5ff
+    style A3 fill:#e1f5ff
+    style O fill:#fff3e0
+    style MCP fill:#f3e5f5
+    style PS fill:#c8e6c9
+    style PRS fill:#c8e6c9
+    style DB1 fill:#ffcdd2
+    style DB2 fill:#ffcdd2
+    style DB3 fill:#ffcdd2

@@ -1,0 +1,24 @@
+{
+  "mcpServers": {
+    "product-manager": {
+      "command": "python",
+      "args": ["/path/to/product_server.py"]
+    },
+    "pricing-manager": {
+      "command": "python",
+      "args": ["/path/to/pricing_server.py"]
+    },
+    "tms-fleet-manager": {
+      "command": "python",
+      "args": ["/path/to/tms_fleet_server.py"]
+    },
+    "tms-finance-manager": {
+      "command": "python",
+      "args": ["/path/to/tms_finance_server.py"]
+    },
+    "tms-booking-manager": {
+      "command": "python",
+      "args": ["/path/to/tms_booking_server.py"]
+    }
+  }
+}
